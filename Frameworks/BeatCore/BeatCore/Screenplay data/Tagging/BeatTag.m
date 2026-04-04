@@ -17,31 +17,37 @@
 
 @implementation BeatTag
 
-+ (BeatTag*)withDefinition:(TagDefinition *)def {
++ (BeatTag*)withDefinition:(TagDefinition *)def
+{
 	return [[BeatTag alloc] initWithDefinition:def];
 }
 
-- (instancetype)initWithDefinition:(TagDefinition*)def {
+- (instancetype)initWithDefinition:(TagDefinition*)def
+{
 	self = [super init];
 	
 	if (self) {
 		self.type = def.type;
 		self.defId = def.defId;
-		self.tagId = [BeatTagging newId];
+        self.tagId = NEW_TAG_ID();
 		self.definition = def;
 	}
 	
 	return self;
 }
 
-- (NSString*)key {
-	return [BeatTagging keyFor:self.type];
-}
-- (NSString*)typeAsString {
+- (NSString*)key
+{
 	return [BeatTagging keyFor:self.type];
 }
 
-- (nonnull id)copyWithZone:(nullable NSZone *)zone {
+- (NSString*)typeAsString
+{
+	return [BeatTagging keyFor:self.type];
+}
+
+- (nonnull id)copyWithZone:(nullable NSZone *)zone
+{
 	BeatTag *tag = [[self.class allocWithZone:zone] init];
 	tag->_type = self.type;
 	tag->_defId = [self.defId copyWithZone:zone];
@@ -51,7 +57,8 @@
 	return tag;
 }
 
-- (void)encodeWithCoder:(nonnull NSCoder *)coder {
+- (void)encodeWithCoder:(nonnull NSCoder *)coder
+{
 	[coder encodeInteger:self.type forKey:@"type"];
 	[coder encodeObject:self.defId forKey:@"defId"];
 	[coder encodeObject:self.tagId forKey:@"tagId"];

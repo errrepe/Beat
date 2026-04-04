@@ -22,6 +22,8 @@
 
 #import <BeatCore/BeatEditorDelegate.h>
 
+#define NEW_TAG_ID() NSUUID.UUID.UUIDString.lowercaseString
+
 @class BeatTag;
 
 typedef NS_ENUM(NSInteger, BeatTagType) {
@@ -44,6 +46,7 @@ typedef NS_ENUM(NSInteger, BeatTagType) {
 
 @class BeatTagging;
 @class TagDefinition;
+@class BeatTagCategory;
 
 #pragma mark - Search result items for tagging using Levenshtein algorithm
 
@@ -93,8 +96,11 @@ typedef NS_ENUM(NSInteger, BeatTagType) {
 + (NSString*)attributeKey;
 + (NSString*)notificationName;
 
+/// Returns an array of all available tag categories
++ (NSArray<BeatTagCategory*>*)tagCategories;
+
 /// All available tag categories. It's a hard-coded array to retain the order.
-+ (NSArray<NSString*>*)categories;
++ (NSArray<NSString*>*)categoryNames;
 /// Returns enum type for given tag string key
 + (BeatTagType)tagFor:(NSString*)tag;
 /// Returns the key name (string) for given tag type
@@ -112,8 +118,6 @@ typedef NS_ENUM(NSInteger, BeatTagType) {
 + (BXColor*)colorFor:(BeatTagType)tag;
 /// Returns the definitions for all tags in an array
 + (NSMutableArray<TagDefinition*>*)definitionsForTags:(NSArray<BeatTag*>*)tags;
-/// Creates a new UUID and returns it as string
-+ (NSString*)newId;
 /// ...
 + (NSString*)hexForKey:(NSString*)key;
 /// Returns SF Symbol names for given tags

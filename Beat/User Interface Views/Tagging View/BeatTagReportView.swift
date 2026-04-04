@@ -83,7 +83,7 @@ class BeatTagReportView:NSViewController, BeatTagManagerView, NSOutlineViewDeleg
 	// MARK: - Data source and delegate
 	
 	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-		return (item == nil) ? BeatTagging.categories().count : 0
+		return (item == nil) ? BeatTagging.categoryNames().count : 0
 	}
 	
 	func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
@@ -91,7 +91,7 @@ class BeatTagReportView:NSViewController, BeatTagManagerView, NSOutlineViewDeleg
 	}
 
 	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-		return BeatTagging.categories()[index]
+		return BeatTagging.categoryNames()[index]
 	}
 
 	func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {

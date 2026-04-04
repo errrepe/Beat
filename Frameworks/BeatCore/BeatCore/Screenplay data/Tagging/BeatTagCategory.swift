@@ -14,6 +14,7 @@ public class BeatTagCategory:NSObject {
     public var keyName:String
     public var colorName:String
     public var icon:UXImage?
+    public var iconName:String?
     public var fdxCategories:[String]
     
     private var color:UXColor?
@@ -23,6 +24,7 @@ public class BeatTagCategory:NSObject {
         self.keyName = keyName
         self.colorName = colorName
         self.fdxCategories = fdxCategories
+        self.iconName = iconName
         
         if let iconName {
             #if os(macOS)

@@ -117,14 +117,14 @@ class BeatTagEditor:NSViewController, BeatTagManagerView, NSOutlineViewDataSourc
 	}
 	
 	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-		if item == nil { return BeatTagging.categories().count }
+		if item == nil { return BeatTagging.categoryNames().count }
 
 		if let tags = tagData[item as? String ?? ""] { return tags.count }
 		else { return 0 }
 	}
 	
 	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-		if item == nil { return BeatTagging.categories()[index] }
+		if item == nil { return BeatTagging.categoryNames()[index] }
 		
 		let key = item as? String ?? ""
 		if let tags = tagData[key] { return tags[index] }
