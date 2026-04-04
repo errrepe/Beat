@@ -275,13 +275,18 @@
     return NSNotFound;
 }
 
-- (NSInteger)nearestBlockIndexForLine:(Line*)line {
+- (NSInteger)nearestBlockIndexForLine:(Line*)line
+{
     return [self nearestBlockIndexForRange:line.range];
 }
     
-- (NSInteger)nearestBlockIndexForRange:(NSRange)range {
+- (NSInteger)nearestBlockIndexForRange:(NSRange)range
+{
+    if (_blocks.count == 0) return NSNotFound;
+    
     for (NSInteger i=0; i<_blocks.count; i++) {
         BeatPaginationBlock* block = _blocks[i];
+        if (block.lines.count == 0) continue;
         
         for (NSInteger j=0; j<block.lines.count; j++) {
             Line* l = block.lines[j];
