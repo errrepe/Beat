@@ -222,7 +222,7 @@
     
     // Strikethrough for ranges marked for removal
     [line.removalSuggestionRanges enumerateRangesUsingBlock:^(NSRange range, BOOL * _Nonnull stop) {
-        range = CLAMP_RANGE(range, NSMaxRange(range));
+        range = CLAMP_RANGE(range, attributedString.length);
         [attributedString addAttribute:NSStrikethroughColorAttributeName value:BXColor.blackColor range:range];
         [attributedString addAttribute:NSStrikethroughStyleAttributeName value:@1 range:range];
     }];
