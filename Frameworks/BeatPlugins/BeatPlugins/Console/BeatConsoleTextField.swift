@@ -74,7 +74,6 @@ public class BeatConsoleTextField: NSTextField {
 }
 
 class JSSyntaxHighlighter {
-	
 	struct color {
 		static let normal     = [NSAttributedString.Key.foregroundColor: NSColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)] // light grey
 		static let beat       = [NSAttributedString.Key.foregroundColor: NSColor(red: 0.30, green: 0.60, blue: 0.90, alpha: 1.0)] // blue
@@ -90,7 +89,7 @@ class JSSyntaxHighlighter {
 	
 	struct regex {
 		static let beat 	     = "(Beat)"
-		static let keywords	     = "(var|const|let|function|for|while|do|try|catch|await|sync|class)"
+        static let keywords      = #"\b(var|const|let|function|for|while|do|try|catch|await|async|class)\b"#
 		static let arguments     = "\\(|)\\)"
 		static let expression 	 = "(\\#[a-zA-Z][a-zA-Z0-9,\\.\\(\\)]*\\#)"
 		static let numberLiteral = "\\b([0-9]*(\\.[0-9]*)?)\\b"

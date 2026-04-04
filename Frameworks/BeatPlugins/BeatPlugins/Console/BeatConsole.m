@@ -23,6 +23,7 @@
 #import <BeatCore/BeatCore.h>
 #import <BeatPlugins/BeatPlugin.h>
 #import <BeatPlugins/BeatPluginAgent.h>
+#import <BeatPlugins/BeatPlugins-Swift.h>
 
 #define ConsolePluginName @"Console"
 
@@ -30,8 +31,9 @@
     bool awoken;
 }
 #if !TARGET_OS_IOS
-@property (nonatomic) IBOutlet NSTextView *consoleTextView;
-@property (nonatomic) IBOutlet NSPopUpButton* contextSeletor;
+@property (nonatomic, weak) IBOutlet NSTextView* consoleTextView;
+@property (nonatomic, weak) IBOutlet NSPopUpButton* contextSeletor;
+@property (nonatomic, weak) IBOutlet BeatConsoleTextField* promptField;
 #endif
 
 @property (nonatomic, weak) id<BeatEditorDelegate> currentContext;
@@ -106,6 +108,7 @@
 {
 #if !TARGET_OS_IOS
 	[self.window makeKeyAndOrderFront:nil];
+    [self.window makeFirstResponder:self.promptField];
 #endif
 }
 
