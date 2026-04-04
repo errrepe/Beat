@@ -622,7 +622,6 @@
     
     for (ParsingRule* rule in self.parsingRules) {
         if ([rule validate:prevLine previousLine:lineBeforeThat nextLine:line delegate:self.delegate]) {
-            NSLog(@"Corrected");
             prevLine.type = rule.resultingType;
             [self.changedIndices addIndex:index-1];
             return;

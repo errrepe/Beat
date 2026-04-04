@@ -297,7 +297,7 @@ NSString* const BeatSettingAllowAllFileTypes            = @"allowAllFileTypes";
     
     // No default value provided
     if (values.count < 2) {
-        NSLog(@"WARNING: No default value specified for key '%@'", docKey);
+        NSLog(@"WARNING: No default value specified for key \"%@\"", docKey);
         return false;
     }
 	
