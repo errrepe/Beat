@@ -39,6 +39,9 @@ import JavaScriptCore
     
     var popoverVisible:Bool { get }
     var isEditing:Bool { get }
+    
+    func createReview(_ text:String, _ location:Int, _ length:Int)
+    func rangesForReview(_ item:BeatReviewItem?) -> [NSRange]
 }
 
 
@@ -350,6 +353,38 @@ import JavaScriptCore
         #else
             return false
         #endif
+    }
+    
+    
+    // MARK: - Plugin API methods
+    
+    @objc public func createReview(_ text:String, _ location:Int, _ length:Int) {
+        guard let textStorage = delegate?.textStorage() else { return }
+        
+        let review = BeatReviewItem(reviewString: text as NSString)
+        let range = NSMakeRange(location, length)
+                
+        if NSMaxRange(range) <= textStorage.length {
+            textStorage.addAttribute(BeatReview.attributeKey(), value: review, range: range)
+            
+            // Commit to attributed text cache
+            _ = delegate?.getAttributedText()
+            changeDone()
+        }
+    }
+    
+    @objc public func rangesForReview(_ item:BeatReviewItem?) -> [NSRange] {
+        guard let item, let textStorage = delegate?.textStorage() else { return [] }
+        
+        var ranges:[NSRange] = []
+        
+        textStorage.enumerateAttribute(BeatReview.attributeKey(), in: textStorage.range) { value, range, stop in
+            if let review = value as? BeatReviewItem, review == item {
+                ranges.append(range)
+            }
+        }
+        
+        return ranges
     }
 }
 
