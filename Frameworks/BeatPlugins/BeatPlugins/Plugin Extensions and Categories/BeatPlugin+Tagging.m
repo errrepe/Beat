@@ -18,7 +18,7 @@
 
 - (NSArray*)availableTags
 {
-    return BeatTagging.categories;
+    return BeatTagging.categoryNames;
 }
 
 - (NSDictionary*)tagsForScene:(OutlineScene *)scene

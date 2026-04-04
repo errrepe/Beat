@@ -34,7 +34,7 @@
 		
 		if (index > 0) {
 			// First item is "none" to remove the tag, so index is - 1
-			NSString* key = BeatTagging.categories[index - 1];
+			NSString* key = BeatTagging.categoryNames[index - 1];
 			type = [BeatTagging tagFor:key];
 		}
 
