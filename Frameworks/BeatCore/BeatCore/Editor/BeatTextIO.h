@@ -59,7 +59,7 @@ JSExportAs(moveString, - (void)moveStringFrom:(NSRange)range to:(NSInteger)posit
 - (void)replaceRange:(NSRange)range withString:(NSString*)newString;
 - (void)replaceString:(NSString*)string withString:(NSString*)newString atIndex:(NSUInteger)index;
 - (void)removeRange:(NSRange)range;
-- (void)moveStringFrom:(NSRange)range to:(NSInteger)position actualString:(NSString*)string;
+- (void)moveStringFrom:(NSRange)range to:(NSInteger)position actualString:(NSAttributedString*)string;
 - (void)moveStringFrom:(NSRange)range to:(NSInteger)position;
 - (void)moveScenesInRange:(NSRange)range to:(NSInteger)position;
 - (void)moveScene:(OutlineScene*)sceneToMove from:(NSInteger)from to:(NSInteger)to;

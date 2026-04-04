@@ -9,6 +9,8 @@
  Common editor text manipulation methods for both macOS and iOS.
  Note that the OSs work differently when adding/removing text. On iOS, the cursor has to be readjusted after each operation.
  
+ There's a lot of very old code, which is pretty terrible, but works.
+ 
  */
 
 #import "BeatTextIO.h"
@@ -199,15 +201,16 @@ static NSString *centeredEnd = @" <";
 }
 
 /// Moves the given string in a range to another position. You can provide another string to mutate the string before moving.
-- (void)moveStringFrom:(NSRange)range to:(NSInteger)position actualString:(NSString*)string
+- (void)moveStringFrom:(NSRange)range to:(NSInteger)position actualString:(NSAttributedString*)string
 {
+    if (position > _delegate.text.length) position = _delegate.text.length;
+
+    NSAttributedString* oldAttrStr = [_delegate.textStorage attributedSubstringFromRange:range];
     NSString *oldString = [_delegate.text substringWithRange:range];
     
-    NSString *stringToMove = string;
-    NSInteger length = _delegate.text.length;
+    NSAttributedString* stringToMove = (string != nil) ? string : oldAttrStr;
     
-    if (position > length) position = length;
-    
+    // First remove everything
     [self replaceCharactersInRange:range withString:@""];
     
     NSInteger newPosition = position;
@@ -216,7 +219,8 @@ static NSString *centeredEnd = @" <";
     }
     if (newPosition < 0) newPosition = 0;
     
-    [self replaceCharactersInRange:NSMakeRange(newPosition, 0) withString:stringToMove];
+    [self replaceRange:NSMakeRange(newPosition, 0) withAttributedString:stringToMove];
+    //[self replaceCharactersInRange:NSMakeRange(newPosition, 0) withString:stringToMove];
     
     NSRange undoingRange;
     NSInteger undoPosition;
@@ -236,8 +240,7 @@ static NSString *centeredEnd = @" <";
 /// Moves given range to another position
 - (void)moveStringFrom:(NSRange)range to:(NSInteger)position
 {
-    NSString *stringToMove = [_delegate.text substringWithRange:range];
-    [self moveStringFrom:range to:position actualString:stringToMove];
+    [self moveStringFrom:range to:position actualString:nil];
 }
 
 - (void)moveScene:(OutlineScene*)scene from:(NSInteger)from to:(NSInteger)to
@@ -277,24 +280,25 @@ static NSString *centeredEnd = @" <";
     
     if (target.omitted) movedMidOmission = true;
 
-    NSString* string = [_delegate.text substringWithRange:range];
-    if (string.length == 0) return;
+    NSMutableAttributedString* attrStr = [_delegate.getAttributedText attributedSubstringFromRange:range].mutableCopy;
+    if (attrStr.length == 0) return;
     
     // Create the replacement string for the scene according to omissions
     NSString* replace = @"";
     if (closeOmit) {
         replace = @"*/\n\n";
-        string = [@"/*\n" stringByAppendingString:string];
-        if (![string containsString:@"*/"]) string = [string stringByAppendingString:@"\n*/"];
+        [attrStr insertAttributedString:[NSAttributedString.alloc initWithString:@"/*\n"] atIndex:0];
+        if (![attrStr.string containsString:@"*/"]) [attrStr appendString:@"\n*/"];
     }
     if (openOmit) {
         replace = [replace stringByAppendingString:@"\n/*\n"];
     }
     if (closeOmitInString) {
-        string = [string stringByAppendingString:@"*/"];
+        [attrStr appendString:@"*/"];
     }
     if (movedMidOmission && !scene.omitted) {
-        string = [NSString stringWithFormat:@"*/\n\n%@/*", string];
+        [attrStr insertAttributedString:[NSAttributedString.alloc initWithString:@"/*\n"] atIndex:0];
+        [attrStr appendString:@"/*"];
     }
         
     // Replace scene range
@@ -305,30 +309,30 @@ static NSString *centeredEnd = @" <";
         // Add at the end
         Line* lastLine = _delegate.parser.lines.lastObject;
         // Add a line break if needed
-        if (lastLine.length > 0) string = [@"\n\n" stringByAppendingString:string];
+        if (lastLine.length > 0) [attrStr insertAttributedString:[NSAttributedString.alloc initWithString:@"\n\n"] atIndex:0];
         
         targetPosition = _delegate.text.length;
     } else {
-        if ([string characterAtIndex:string.length-1] != '\n') {
-            string = [string stringByAppendingString:@"\n\n"];
+        if (attrStr.length > 0 && [attrStr.string characterAtIndex:attrStr.length-1] != '\n') {
+            [attrStr appendString:@"\n\n"];
         }
         
         targetPosition = target.position;
     }
     
-    [self addString:string atIndex:targetPosition];
+    [self replaceRange:NSMakeRange(targetPosition, 0) withAttributedString:attrStr];
 }
 
 - (void)moveScenesInRange:(NSRange)range to:(NSInteger)position
 {
     if (range.length == 0 || NSMaxRange(range) > self.delegate.text.length) return;
     
-    NSString* string = [self.delegate.text substringWithRange:range];
+    NSMutableAttributedString* string = [self.delegate.getAttributedText attributedSubstringFromRange:range].mutableCopy;
     
     Line* lastLine = [self.delegate.parser lineAtPosition:NSMaxRange(range)];
+    
     // Add line breaks if needed
-    if (lastLine.type == section && [string characterAtIndex:string.length-1] != '\n') [string stringByAppendingString:@"\n"];
-    else if (lastLine.type != empty || lastLine.length > 0) string = [string stringByAppendingString:@"\n"];
+    if (lastLine.type != empty || lastLine.length > 0) [string appendString:@"\n"];
 
     [self moveStringFrom:range to:position actualString:string];
 }
